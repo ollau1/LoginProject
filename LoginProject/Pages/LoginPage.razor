@@ -1,0 +1,34 @@
+﻿@page "/"
+@using LoginProject.Data.Models
+@using LoginProject.Pages.Services
+@inject UserService userService
+@inject NavigationManager NavManager
+@layout EmptyLayout
+<h3>SignUp Page</h3>
+<EditForm Model="@user" OnValidSubmit="HandleSubmit">
+    <InputText id="UsernameInput" @bind-Value="user.UserName" placeholder="Username" required></InputText>
+    <InputText id="PasswordInput" @bind-Value="user.Password" placeholder="Password" required></InputText>
+    <InputText id="EmailInput" @bind-Value="user.Email" placeholder="Email" required></InputText>
+    <button type="submit" onclick="@RedirectToHome" class="btn-primary">Create</button>
+</EditForm>
+<p>Already have an account? click the button below</p>
+<button onclick="@RedirectToSignIn">Sign In</button>
+@code {
+    User user = new User();
+    public void HandleSubmit(EditContext editContext)
+    {
+        var newUser = (User)editContext.Model;
+        newUser.CreatedDate = DateTime.Now;
+        userService.AddUser(newUser);
+    }
+
+    public void RedirectToSignIn()
+    {
+        NavManager.NavigateTo("/SignInPage");
+    }
+
+        public void RedirectToHome()
+    {
+        NavManager.NavigateTo("/Homepage");
+    }
+}

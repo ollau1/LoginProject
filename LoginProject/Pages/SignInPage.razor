@@ -1,0 +1,37 @@
+﻿@page "/SignInPage"
+@using LoginProject.Data.Models
+@using LoginProject.Pages.Services
+@inject UserService userService
+@inject NavigationManager NavManager
+@layout EmptyLayout
+<h3>SignIn Page</h3>
+
+<EditForm Model="@user">
+    <InputText id="UsernameInput" @bind-Value="user.UserName" placeholder="Username" required></InputText>
+    <InputText type="Password" id="PasswordInput" @bind-Value="user.Password" placeholder="Password" required></InputText>
+    <button onclick="@Login" class="btn-primary">Sign In!</button>
+</EditForm>
+@code {
+    User user = new User();
+
+    public void HandleSubmit(EditContext editContext)
+    {
+        var newUser = (User)editContext.Model;
+        newUser.CreatedDate = DateTime.Now;
+        userService.AddUser(newUser);
+    }
+
+    public void Login()
+    {
+        bool confirmId = userService.GetUserByUserName(user);
+        if (confirmId)
+        {
+            userService.isLoggedIn = true;
+            NavManager.NavigateTo("/Homepage");
+        }
+        else
+        {
+            user = new User();
+        }
+    }
+}

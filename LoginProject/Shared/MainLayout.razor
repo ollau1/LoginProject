@@ -1,0 +1,38 @@
+﻿@inherits LayoutComponentBase
+@inject UserService userservice
+@inject NavigationManager NavManager
+@using LoginProject.Pages.Services
+<PageTitle>LoginProject</PageTitle>
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <button @onclick="Loggout" style="margin-left: 40px;" class="btn btn-outline-primary">Log Out</button>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+@code{
+    protected override async Task OnInitializedAsync()
+    {
+        if (!userservice.isLoggedIn)
+        {
+            NavManager.NavigateTo("/SignInPage");
+        }
+        await base.OnInitializedAsync();
+    }
+
+    public void Loggout()
+    {
+        userservice.isLoggedIn = false;
+        NavManager.NavigateTo("/SignInPage");
+    }
+}
